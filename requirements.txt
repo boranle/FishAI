@@ -1,7 +1,7 @@
---index-url https://download.pytorch.org/whl/cu126
---extra-index-url https://pypi.org/simple
-
-torch
+# Install torch separately on Jetson using a JetPack-compatible NVIDIA wheel.
 reolink-aio
 ultralytics
 opencv-python
+# For jetpack 6.2, install torch and torchvision from NVIDIA's PyPI index:
+# pip3 install --upgrade pip
+# pip3 install --no-cache-dir --extra-index-url https://pypi.ngc.nvidia.com torch torchvision
