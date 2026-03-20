@@ -58,7 +58,7 @@ curl -s https://developer.download.nvidia.com/compute/redist/jp/v62/pytorch/ | g
 #Install one wheel that matches your Python ABI
 For Python 3.10, pick a filename containing cp310-cp310-linux_aarch64.whl
 Example install command format:
-python3 -m pip install --no-cache-dir "https://developer.download.nvidia.com/compute/redist/jp/v62/pytorch/PASTE_EXACT_TORCH_WHEEL_NAME_HERE.whl"
+python3 -m pip install --no-cache-dir "https://pypi.jetson-ai-lab.io/jp6/cu126/torch-2.10.0-cp310-cp310-linux_aarch64.whl"
 
 #Install torchvision after torch
 python3 -m pip install --no-cache-dir torchvision
