@@ -1,0 +1,7 @@
+--index-url https://download.pytorch.org/whl/cu126
+--extra-index-url https://pypi.org/simple
+
+torch
+reolink-aio
+ultralytics
+opencv-python
