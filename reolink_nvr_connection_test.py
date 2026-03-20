@@ -10,7 +10,7 @@ import asyncio
 print("Starting connection test")
 async def print_mac_address():
     # initialize the host
-    host = Host('192.168.1.100','admin', 'Fishfish', port=554)
+    host = Host('192.168.1.100','admin', 'Fishfish', port=9000)
     print("Connection made")
     # connect and obtain/cache device settings and capabilities
     await host.get_host_data()
