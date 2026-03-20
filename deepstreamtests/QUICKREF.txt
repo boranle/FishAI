@@ -1,0 +1,243 @@
+# DeepStream Quick Reference - Jetson Orin Nano
+
+## 🚀 Quick Commands
+
+### Installation
+```bash
+sudo bash install_deepstream.sh          # One-time setup
+sudo reboot                               # Reboot system
+sudo nvpmodel -m 0                        # Max performance mode
+sudo jetson_clocks.sh                     # Boost GPU clocks
+```
+
+### Running Programs
+```bash
+python3 deepstream_inference.py           # Basic RTSP pipeline
+python3 deepstream_yolo_advanced.py       # YOLO + tracking
+deepstream-app -c deepstream_config.txt   # CLI tool
+```
+
+### Monitoring
+```bash
+nvidia-smi                                # GPU status (one-shot)
+watch -n 1 nvidia-smi                     # GPU status (live)
+jtop                                      # Full system monitor
+tegrastats                                # Real-time stats
+```
+
+### Testing
+```bash
+gst-launch-1.0 rtspsrc location="rtsp://..." ! fakesink   # Test RTSP
+gst-inspect-1.0 nvv4l2decoder                             # Check plugin
+nvidia-smi dmon                                           # Memory monitor
+```
+
+---
+
+## 🔌 Configuration Quick Edit
+
+### File Locations (on Jetson)
+```
+/opt/nvidia/deepstream/deepstream/        # DeepStream root
+/opt/nvidia/deepstream/deepstream/lib/    # Libraries
+/opt/nvidia/deepstream/deepstream/sources/python/  # Python bindings
+```
+
+### Common Config Changes
+
+**Change RTSP Stream**:
+```python
+# In deepstream_inference.py
+RTSP_URI = "rtsp://YOUR_IP:554/stream"
+```
+
+**Change Confidence Threshold**:
+```python
+CONF_THRESHOLD = 0.5  # Lower = more detections, more false positives
+```
+
+**Change Input Resolution**:
+```python
+streammux.set_property("width", 1280)   # Default 1920
+streammux.set_property("height", 720)   # Default 1080
+```
+
+**Enable Video Output**:
+```python
+OUTPUT_VIDEO = True
+VIDEO_OUTPUT_PATH = "/tmp/output.mkv"
+```
+
+**Enable Tracker**:
+```python
+CONFIG["enable_tracker"] = True
+```
+
+---
+
+## 📊 Performance Targets
+
+| Use Case | Resolution | Model | Target FPS | Precision |
+|----------|-----------|-------|-----------|-----------|
+| **Detection** | 1280x720 | ResNet-10 | 25+ | FP32 |
+| **Speed** | 640x480 | YOLOv5n | 30+ | INT8 |
+| **Accuracy** | 1920x1080 | YOLOv5s | 15-20 | INT8 |
+| **Tracking** | 1280x720 | YOLOv5n+ | 20+ | INT8 |
+| **Multi-stream** | 640x480 | ResNet-10 | 15+ | FP32 |
+
+---
+
+## ⚡ Performance Tuning
+
+### Speed Up (Prioritize FPS)
+```python
+FRAME_SKIP = 1                    # Every 2nd frame
+IMG_SIZE = 480                    # Smaller input
+USE_HALF = True                   # FP16 precision
+CONF_THRESHOLD = 0.7              # Higher = fewer detections
+```
+
+### Accuracy Up (Prioritize Precision)
+```python
+FRAME_SKIP = 0                    # Every frame
+IMG_SIZE = 1024                   # Larger input
+USE_HALF = False                  # FP32 precision
+CONF_THRESHOLD = 0.3              # Lower = more detections
+```
+
+### Memory Optimization
+```python
+streammux.set_property("buffer-pool-size", 2)  # Default 4
+streammux.set_property("batch-size", 1)        # Default 2
+```
+
+---
+
+## 🎯 YOLO Model Setup
+
+### Export YOLO to TensorRT
+```python
+from ultralytics import YOLO
+
+# Load model
+model = YOLO("yolov8n.pt")
+
+# Export to TensorRT
+engine = model.export(
+    format="engine",
+    imgsz=640,
+    device=0,
+    half=True,
+    int8=True,
+)
+print(f"Saved: {engine}")
+```
+
+### Use in DeepStream
+```python
+CONFIG["model_engine"] = "./yolov8n.engine"
+YOLO_CLASSES = ["person", "car", "dog"]  # Update labels
+```
+
+---
+
+## 🔍 Object Metadata Access
+
+### In Detection Callback
+```python
+# Get detections for current frame
+for obj_meta in frame_detections:
+    class_name = obj_meta["class_name"]
+    confidence = obj_meta["confidence"]
+    bbox = obj_meta["bbox"]
+    track_id = obj_meta["track_id"]
+    
+    print(f"{class_name}: {confidence:.2%} (ID: {track_id})")
+```
+
+---
+
+## 🐛 Quick Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| **No stream connection** | Check RTSP URL, credentials, firewall (port 554) |
+| **Low FPS** | Reduce resolution, use INT8, skip frames, lower threshold |
+| **High memory usage** | Reduce batch size, model size, buffer pool size |
+| **GStreamer error** | `sudo apt-get install --reinstall gstreamer1.0-plugins-*` |
+| **Model not found** | Check path: `ls -la /path/to/model.engine` |
+| **GPU not detected** | `nvidia-smi`, check CUDA_VISIBLE_DEVICES |
+| **Pipeline crashes** | Check logs, verify GStreamer caps compatibility |
+
+---
+
+## 📁 File Structure
+
+```
+Testing/
+├── deepstream_inference.py          # Basic pipeline
+├── deepstream_yolo_advanced.py      # Advanced with YOLO
+├── deepstream_config.txt            # CLI config file
+├── install_deepstream.sh            # Installation script
+├── requirements_jetson.txt          # Python packages
+├── README_DEEPSTREAM.md             # Full documentation
+├── DEEPSTREAM_SETUP.md              # Setup guide
+└── QUICKREF.txt                     # This file
+```
+
+---
+
+## 🔗 Useful Links
+
+| Resource | URL |
+|----------|-----|
+| **DeepStream Docs** | https://docs.nvidia.com/metropolis/deepstream/ |
+| **Jetson Orin Nano** | https://developer.nvidia.com/jetson-orin-nano |
+| **GStreamer Plugins** | https://gstreamer.freedesktop.org/documentation/plugins/ |
+| **NVIDIA Forum** | https://forums.developer.nvidia.com/c/agx-autonomous-machines/jetson/71 |
+| **Ultralytics YOLO** | https://github.com/ultralytics/ultralytics |
+
+---
+
+## 🎓 Key Concepts
+
+**NvStreammux**: Combines multiple input streams into batches for GPU processing
+
+**PGIE**: Primary GPU Inference Engine - runs detection model
+
+**NvTracker**: Multi-object tracker using optical flow + re-identification
+
+**NvOSD**: Renders bounding boxes, text, and overlays on video
+
+**TensorRT Engine**: Compiled/optimized model for NVIDIA GPUs
+
+**INT8 Quantization**: Reduced precision (8-bit) for 2-3x speed boost
+
+---
+
+## 💡 Pro Tips
+
+1. **Lower latency**: Set `source.set_property("latency", 50)` for lower values
+2. **Better tracking**: Increase tracker resolution for crowded scenes
+3. **Save bandwidth**: Use sub-streams (lower resolution) for secondary input
+4. **Debug detections**: Print `obj_meta.confidence` before filtering
+5. **Test locally first**: Use file inputs before RTSP streams
+6. **Monitor thermals**: `tegrastats | grep "Temp"` - Orin Nano ideal is <60°C
+
+---
+
+## ✅ Pre-Flight Checklist
+
+- [ ] JetPack 6.2 installed (`cat /etc/nv_tegra_release`)
+- [ ] DeepStream 6.3+ installed (`which deepstream-app`)
+- [ ] RTSP URL working (`gst-launch-1.0 rtspsrc ...`)
+- [ ] GPU accessible (`nvidia-smi`)
+- [ ] Python bindings working (`python3 -c "import gi"`)
+- [ ] Model/engine file available (`ls model.engine`)
+- [ ] Adequate cooling installed
+- [ ] Power supply adequate (25W minimum recommended)
+
+---
+
+*Last Updated: March 2026*  
+*For full documentation, see README_DEEPSTREAM.md*
