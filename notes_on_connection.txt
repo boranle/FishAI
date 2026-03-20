@@ -59,6 +59,8 @@ curl -s https://developer.download.nvidia.com/compute/redist/jp/v62/pytorch/ | g
 For Python 3.10, pick a filename containing cp310-cp310-linux_aarch64.whl
 Example install command format:
 python3 -m pip install --no-cache-dir "https://pypi.jetson-ai-lab.io/jp6/cu126/+f/37d/7e156cfb4a646/torch-2.10.0-cp310-cp310-linux_aarch64.whl#sha256=37d7e156cfb4a646c4d7347597727db1529d184108f703324dfff1842cec094e"
+python3 -m pip install --no-cache-dir "https://pypi.jetson-ai-lab.io/jp6/cu126/+f/1b6/357c5532db61e/torchvision-0.25.0-cp310-cp310-linux_aarch64.whl#sha256=1b6357c5532db61e9bfe7ad69f73ba73e8214010de021da703d360d2cc16c3d7"
+
 #Install torchvision after torch
 python3 -m pip install --no-cache-dir torchvision
 
