@@ -49,3 +49,22 @@ pip3 cache purge
 pip3 install --upgrade pip setuptools wheel
 pip3 install --no-cache-dir --extra-index-url https://pypi.ngc.nvidia.com torch torchvision
 pip3 install --no-cache-dir reolink-aio ultralytics opencv-python
+
+# 1) Remove all torch variants from the active Python
+python3 -m pip uninstall -y torch torchvision torchaudio
+
+# 2) Make sure you are using the intended interpreter
+python3 -c "import sys; print(sys.executable)"
+
+# 3) Check JetPack/L4T (needed for matching wheel)
+cat /etc/nv_tegra_release
+
+# 4) Upgrade pip tooling
+python3 -m pip install --upgrade pip setuptools wheel
+
+# 5) See NVIDIA torch builds available from NGC
+python3 -m pip index versions torch --index-url https://pypi.ngc.nvidia.com
+
+# 6) Install an NVIDIA build (IMPORTANT: pick a version that contains +nv)
+# Example pattern (replace with one shown by step 5):
+python3 -m pip install --no-cache-dir --index-url https://pypi.ngc.nvidia.com "torch==<VERSION_WITH_+nv>" "torchvision==<MATCHING_VERSION>"
