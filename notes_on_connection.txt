@@ -67,7 +67,7 @@ python3 -m pip install --no-cache-dir torchvision
 #Verify
 python3 -c "import torch; print(torch.version); print(torch.cuda.is_available()); print(torch.version.cuda)"
 
-$ wget https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/a86/1895294d90440/torch-2.6.0rc1-cp310-cp310-linux_aarch64.whl#sha256=a861895294d90440f2cdbd863d3fd5407fcc346f819665f3a63d90dfcf41a5b0
-$ pip install torch-2.6.0rc1-cp310-cp310-linux_aarch64.whl
-$ wget https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/5f9/67f920de3953f/torchvision-0.20.0-cp310-cp310-linux_aarch64.whl#sha256=5f967f920de3953f2a39d95154b1feffd5ccc06b4589e51540dc070021a9adb9
-$ pip install torchvision-0.20.0-cp310-cp310-linux_aarch64.whl
+wget https://pypi.jetson-ai-lab.io/jp6/cu126/+f/37d/7e156cfb4a646/torch-2.10.0-cp310-cp310-linux_aarch64.whl#sha256=37d7e156cfb4a646c4d7347597727db1529d184108f703324dfff1842cec094e
+pip install torch-2.6.0rc1-cp310-cp310-linux_aarch64.whl
+wget https://pypi.jetson-ai-lab.io/jp6/cu126/+f/1b6/357c5532db61e/torchvision-0.25.0-cp310-cp310-linux_aarch64.whl#sha256=1b6357c5532db61e9bfe7ad69f73ba73e8214010de021da703d360d2cc16c3d7
+pip install torchvision-0.20.0-cp310-cp310-linux_aarch64.whl
