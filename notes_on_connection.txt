@@ -43,3 +43,9 @@ s = torch.tensor([0.9,0.8], device="cuda")
 keep = torchvision.ops.nms(b, s, 0.5)
 print("torchvision nms: OK", keep)
 PY
+
+pip3 uninstall -y torch torchvision torchaudio ultralytics
+pip3 cache purge
+pip3 install --upgrade pip setuptools wheel
+pip3 install --no-cache-dir --extra-index-url https://pypi.ngc.nvidia.com torch torchvision
+pip3 install --no-cache-dir reolink-aio ultralytics opencv-python
