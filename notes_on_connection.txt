@@ -3,7 +3,7 @@ plug all ethernet together
 connect power to tplink
 after flashing data light on computer side (port 1) of tplink switch on nvr
 use script to run connection test with nvr
-
+6rtQ7mgaWS2fY9a
 If it says connected but then nothing happens after multiple minutes or timesout:
     - Recheck your computers ethernet connection settings:
         - IP static: 192.168.1.1
